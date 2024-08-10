@@ -15,6 +15,10 @@ COPY . .
 
 # Build the application
 RUN npm run build
+# Manually install the the following packages as they are not being installed for some reason.
+# TODO: Investigate why these packages are not being installed.
+RUN npm install @aws-sdk/util-dynamodb@^3.624.0
+RUN npm install  @aws-sdk/client-dynamodb@^3.624.0
 
 # Expose the port the app runs on
 EXPOSE 3000

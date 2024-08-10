@@ -10,6 +10,7 @@ services:
       - AWS_REGION=us-east-1
       - LOCALSTACK_HOSTNAME=localstack
       - AWS_ENDPOINT=http://localstack:4566
+      - NEXT_PUBLIC_BASE_URL=http://app:3000
     volumes:
       - .:/app
       - /app/node_modules
