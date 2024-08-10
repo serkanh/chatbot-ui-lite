@@ -1,6 +1,6 @@
 import { Message } from "@/types";
 import { OpenAIStream } from "@/utils";
-import { connectToDatabase } from "@/utils/db";
+import { saveMessages } from "@/utils/dynamo-db";
 
 export const config = {
   runtime: "edge"
@@ -31,12 +31,8 @@ const handler = async (req: Request): Promise<Response> => {
     // Store messages in the database
     console.log("Storing messages in the database",messagesToSend);
     console.log("Session ID",sessionId);
-    // const db = await connectToDatabase();
-    // await db.collection("conversations").insertOne({
-    //   sessionId,
-    //   messages: messagesToSend,
-    //   timestamp: new Date()
-    // });
+    // Save messages to DynamoDB
+    await saveMessages(sessionId, messagesToSend);
 
     return new Response(stream);
   } catch (error) {

@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - AWS_ACCESS_KEY_ID=test
+      - AWS_SECRET_ACCESS_KEY=test
+      - AWS_REGION=us-east-1
+      - LOCALSTACK_HOSTNAME=localstack
+      - AWS_ENDPOINT=http://localstack:4566
+    volumes:
+      - .:/app
+      - /app/node_modules
+    command: npm run dev
+    depends_on:
+      - localstack
+
+  localstack:
+    image: localstack/localstack:latest
+    ports:
+      - "4566:4566"
+    environment:
+      - SERVICES=dynamodb,s3
+      - DEBUG=1
+    volumes:
+      - ./create-dynamo-table.sh:/etc/localstack/init/ready.d/init-aws.sh
+      - ./tmp_localstack:/tmp
+
+volumes:
+  localstack-data:
