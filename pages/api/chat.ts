@@ -1,5 +1,6 @@
 import { Message } from "@/types";
 import { OpenAIStream } from "@/utils";
+import { connectToDatabase } from "@/utils/db";
 
 export const config = {
   runtime: "edge"
@@ -7,8 +8,9 @@ export const config = {
 
 const handler = async (req: Request): Promise<Response> => {
   try {
-    const { messages } = (await req.json()) as {
+    const { messages, sessionId } = (await req.json()) as {
       messages: Message[];
+      sessionId: string;
     };
 
     const charLimit = 12000;
@@ -25,6 +27,16 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     const stream = await OpenAIStream(messagesToSend);
+
+    // Store messages in the database
+    console.log("Storing messages in the database",messagesToSend);
+    console.log("Session ID",sessionId);
+    // const db = await connectToDatabase();
+    // await db.collection("conversations").insertOne({
+    //   sessionId,
+    //   messages: messagesToSend,
+    //   timestamp: new Date()
+    // });
 
     return new Response(stream);
   } catch (error) {

@@ -4,10 +4,12 @@ import { Navbar } from "@/components/Layout/Navbar";
 import { Message } from "@/types";
 import Head from "next/head";
 import { useEffect, useRef, useState } from "react";
+import { v4 as uuidv4 } from 'uuid';
 
 export default function Home() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
+  const [sessionId, setSessionId] = useState<string>("");
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -27,7 +29,8 @@ export default function Home() {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        messages: updatedMessages
+        messages: updatedMessages,
+        sessionId
       })
     });
 
@@ -83,6 +86,7 @@ export default function Home() {
         content: `Hi there! I'm Chatbot UI, an AI assistant. I can help you with things like answering questions, providing information, and helping with tasks. How can I help you?`
       }
     ]);
+    setSessionId(uuidv4());
   };
 
   useEffect(() => {
@@ -90,6 +94,7 @@ export default function Home() {
   }, [messages]);
 
   useEffect(() => {
+    setSessionId(uuidv4());
     setMessages([
       {
         role: "assistant",
